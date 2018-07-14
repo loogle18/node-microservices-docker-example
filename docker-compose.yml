@@ -1,0 +1,74 @@
+version: "3"
+
+services:
+  proxy:
+    restart: always
+    build:
+      context: proxy
+    environment:
+      - NODE_ENV=development
+      - APP_USER=${APP_USER}
+      - APP_PASSWORD=${APP_PASSWORD}
+      - USER_DB_USER_NAME=${USER_DB_USER_NAME}
+      - GATEWAY_HOST=gateway
+    ports:
+      - "3000:3000"
+    command: ["./setup/wait-for-db.sh", "user_db", "npm", "start"]
+    links:
+      - user_db
+      - book_db
+      - gateway
+  user_db:
+    restart: always
+    image: postgres:10
+    environment:
+      - POSTGRES_USER=${USER_DB_USER_NAME}
+      - POSTGRES_PASSWORD=${USER_DB_PASSWORD}
+      - POSTGRES_DB=${USER_DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./user_db_data/postgres:/var/lib/postgresql/data
+  book_db:
+    image: mongo:latest
+    container_name: "book_db"
+    environment:
+      - MONGO_DATA_DIR=/book_db_data/db
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - ./book_db_data/db:/data/db
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null
+  gateway:
+    restart: always
+    build:
+      context: gateway
+    environment:
+      - NODE_ENV=development
+      - USER_API_HOST=user_api
+      - BOOK_API_HOST=book_api
+    ports:
+      - "3001:3001"
+    links:
+      - user_api
+      - book_api
+  user_api:
+    restart: always
+    build:
+      context: user_api
+    environment:
+      - NODE_ENV=development
+      - USER_DB_USER_NAME=${USER_DB_USER_NAME}
+      - USER_DB_PASSWORD=${USER_DB_PASSWORD}
+      - USER_DB_NAME=${USER_DB_NAME}
+    ports:
+      - "3002:3002"
+  book_api:
+    restart: always
+    build:
+      context: book_api
+    environment:
+      - NODE_ENV=development
+    ports:
+      - "3003:3003"

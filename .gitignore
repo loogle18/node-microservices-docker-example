@@ -1,0 +1,27 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+node_modules
+
+# Builds
+build
+
+# Optional npm cache directory
+.npm
+
+# Editors
+.idea
+.vscode
+
+# OS generated files
+.DS_Store
+
+# Volume data
+book_db_data
+user_db_data
+
+# Script for setting env variables
+.app_config
