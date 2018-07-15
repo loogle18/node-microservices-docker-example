@@ -10,7 +10,7 @@ services:
       - APP_USER=${APP_USER}
       - APP_PASSWORD=${APP_PASSWORD}
       - USER_DB_USER_NAME=${USER_DB_USER_NAME}
-      - GATEWAY_HOST=gateway
+      - GATEWAY_HOST=gateway:3001
     ports:
       - 3000:3000
     command: ["./setup/wait-for-db.sh", "user_db", "npm", "start"]
@@ -48,8 +48,8 @@ services:
       context: gateway
     environment:
       - NODE_ENV=development
-      - USER_API_HOST=user_api
-      - BOOK_API_HOST=book_api
+      - USER_API_HOST=user_api:3002
+      - BOOK_API_HOST=book_api:3003
     ports:
       - 3001:3001
     links:
@@ -64,7 +64,7 @@ services:
       - USER_DB_USER_NAME=${USER_DB_USER_NAME}
       - USER_DB_PASSWORD=${USER_DB_PASSWORD}
       - USER_DB_NAME=${USER_DB_NAME}
-      - USER_DB_HOST=user_db
+      - USER_DB_HOST=user_db:5432
     ports:
       - 3002:3002
     links:
@@ -76,7 +76,7 @@ services:
     environment:
       - NODE_ENV=development
       - BOOK_DB_NAME=${BOOK_DB_NAME}
-      - BOOK_DB_HOST=book_db
+      - BOOK_DB_HOST=book_db:27017
     ports:
       - 3003:3003
     links:

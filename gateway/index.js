@@ -5,9 +5,9 @@ const apiProxy = httpProxy.createProxyServer();
 
 app.all('*', (req, res, next) => {
   if (req.path.includes('users')) {
-    apiProxy.web(req, res, { target: `http://${process.env.USER_API_HOST}:3002` });
+    apiProxy.web(req, res, { target: `http://${process.env.USER_API_HOST}` });
   } else if (req.path.includes('books')) {
-    apiProxy.web(req, res, { target: `http://${process.env.BOOK_API_HOST}:3003` });
+    apiProxy.web(req, res, { target: `http://${process.env.BOOK_API_HOST}` });
   } else {
     res.status(404).send('Not found.\nThe requested URL was not found on the server.');
   }

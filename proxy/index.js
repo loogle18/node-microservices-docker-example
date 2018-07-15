@@ -2,7 +2,7 @@ const express = require('express');
 const httpProxy = require('http-proxy');
 const app = express();
 const { GATEWAY_HOST, APP_USER, APP_PASSWORD } = process.env;
-const gatewayProxy = httpProxy.createProxyServer({ target: `http://${GATEWAY_HOST}:3001` });
+const gatewayProxy = httpProxy.createProxyServer({ target: `http://${GATEWAY_HOST}` });
 
 
 app.use((req, res, next) => {
