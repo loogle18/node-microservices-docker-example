@@ -37,13 +37,14 @@ module.exports = function(app, db) {
   });
 
 	app.get('/books/:id', (req, res) => {
-    let query = { '_id': new ObjectID(req.params.id) };
+    let { id } = req.params;
+    let query = { '_id': new ObjectID(id) };
     db.collection('books').findOne(query, (err, result) => {
       if (err) {
         res.send(defaultErrResp);
       } else {
         if (!result) {
-          res.send({ error: `Book with id ${req.params.id} doesn't exist` });
+          res.send({ error: `Book with id ${id} doesn't exist` });
         } else {
           res.send(result);
         }
@@ -52,13 +53,18 @@ module.exports = function(app, db) {
   });
 
   app.put('/books/:id', (req, res) => {
-    let query = { '_id': new ObjectID(req.params.id) };
+    let { id } = req.params;
+    let query = { '_id': new ObjectID(id) };
     let payload = { $set: { title: req.body.title, text: req.body.text } };
     db.collection('books').findOneAndUpdate(query, payload, (err, result) => {
       if (err) {
         res.send(defaultErrResp);
       } else {
-        res.send(result);
+        if (result.value) {
+          res.send(result.value);
+        } else {
+          res.send({ error: `Book with id ${id} doesn't exist` });
+        }
       }
     });
   });
@@ -75,12 +81,17 @@ module.exports = function(app, db) {
   });
 
   app.delete('/books/:id', (req, res) => {
-    let query = { '_id': new ObjectID(req.params.id) };
+    let { id } = req.params;
+    let query = { '_id': new ObjectID(id) };
     db.collection('books').findOneAndDelete(query, (err, result) => {
       if (err) {
         res.send(defaultErrResp);
       } else {
-        res.send(result);
+        if (result.value) {
+          res.send(result.value);
+        } else {
+          res.send({ error: `Book with id ${id} doesn't exist` });
+        }
       }
     });
   });

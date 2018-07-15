@@ -10,7 +10,8 @@
     "author": "sviat.minato@gmail.com",
     "license": "MIT",
     "dependencies": {
-        "express": "^4.16.3"
+        "express": "^4.16.3",
+        "pg-promise": "^8.4.5"
     }
   }
   

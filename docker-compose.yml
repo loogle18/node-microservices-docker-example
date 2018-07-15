@@ -12,7 +12,7 @@ services:
       - USER_DB_USER_NAME=${USER_DB_USER_NAME}
       - GATEWAY_HOST=gateway
     ports:
-      - "3000:3000"
+      - 3000:3000
     command: ["./setup/wait-for-db.sh", "user_db", "npm", "start"]
     links:
       - user_db
@@ -20,13 +20,14 @@ services:
       - gateway
   user_db:
     restart: always
-    image: postgres:10
+    build:
+      context: user_db
     environment:
       - POSTGRES_USER=${USER_DB_USER_NAME}
       - POSTGRES_PASSWORD=${USER_DB_PASSWORD}
       - POSTGRES_DB=${USER_DB_NAME}
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - ./user_db_data/postgres:/var/lib/postgresql/data
   book_db:
@@ -50,7 +51,7 @@ services:
       - USER_API_HOST=user_api
       - BOOK_API_HOST=book_api
     ports:
-      - "3001:3001"
+      - 3001:3001
     links:
       - user_api
       - book_api
@@ -65,7 +66,7 @@ services:
       - USER_DB_NAME=${USER_DB_NAME}
       - USER_DB_HOST=user_db
     ports:
-      - "3002:3002"
+      - 3002:3002
     links:
       - user_db
   book_api:
@@ -77,6 +78,6 @@ services:
       - BOOK_DB_NAME=${BOOK_DB_NAME}
       - BOOK_DB_HOST=book_db
     ports:
-      - "3003:3003"
+      - 3003:3003
     links:
       - book_db
