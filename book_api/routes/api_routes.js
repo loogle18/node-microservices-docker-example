@@ -1,12 +1,11 @@
 const ObjectID = require('mongodb').ObjectID;
-const defaultErrResp = { error: 'An error has occurred' };
 
 
 module.exports = function(app, db) {
   app.get('/books', (req, res) => {
   	db.collection('books').find().toArray((err, result) => {
   		if (err) {
-  			res.send(defaultErrResp);
+  			res.send({ error: err });
   		} else {
   			res.send(result);
   		}
@@ -17,7 +16,7 @@ module.exports = function(app, db) {
     let query = new RegExp(`^${req.query.query}`, 'i');
   	db.collection('books').find({ $or: [ { title: query }, { text: query } ] }).toArray((err, result) => {
   		if (err) {
-  			res.send(defaultErrResp);
+  			res.send({ error: err });
   		} else {
   			res.send(result);
   		}
@@ -41,7 +40,7 @@ module.exports = function(app, db) {
     let query = { '_id': new ObjectID(id) };
     db.collection('books').findOne(query, (err, result) => {
       if (err) {
-        res.send(defaultErrResp);
+        res.send({ error: err });
       } else {
         if (!result) {
           res.send({ error: `Book with id ${id} doesn't exist` });
@@ -58,7 +57,7 @@ module.exports = function(app, db) {
     let payload = { $set: { title: req.body.title, text: req.body.text } };
     db.collection('books').findOneAndUpdate(query, payload, (err, result) => {
       if (err) {
-        res.send(defaultErrResp);
+        res.send({ error: err });
       } else {
         if (result.value) {
           res.send(result.value);
@@ -73,7 +72,7 @@ module.exports = function(app, db) {
     let book = { text: req.body.text, title: req.body.title };
     db.collection('books').insertOne(book, (err, result) => {
       if (err) {
-        res.send(defaultErrResp);
+        res.send({ error: err });
       } else {
         res.send(result.ops[0]);
       }
@@ -85,7 +84,7 @@ module.exports = function(app, db) {
     let query = { '_id': new ObjectID(id) };
     db.collection('books').findOneAndDelete(query, (err, result) => {
       if (err) {
-        res.send(defaultErrResp);
+        res.send({ error: err });
       } else {
         if (result.value) {
           res.send(result.value);
