@@ -12,7 +12,7 @@ module.exports = function(app, db) {
   		}
   	});
   });
-  
+
   app.get('/books/search', (req, res) => {
     let query = new RegExp(`^${req.query.query}`, 'i');
   	db.collection('books').find({ $or: [ { title: query }, { text: query } ] }).toArray((err, result) => {
@@ -72,8 +72,8 @@ module.exports = function(app, db) {
   app.post('/books', (req, res) => {
     let book = { text: req.body.text, title: req.body.title };
     db.collection('books').insertOne(book, (err, result) => {
-      if (err) { 
-        res.send(defaultErrResp); 
+      if (err) {
+        res.send(defaultErrResp);
       } else {
         res.send(result.ops[0]);
       }

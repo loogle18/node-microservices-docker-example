@@ -8,7 +8,7 @@ module.exports = function(app, db) {
       res.send({ error: err });
     });
   });
-  
+
   app.get('/users/search', (req, res) => {
     db.any('SELECT * FROM users WHERE LOWER(first_name) LIKE ${query} OR LOWER(last_name) LIKE ${query}', {
       query: `%${(req.query.query || '').toLowerCase()}%`
